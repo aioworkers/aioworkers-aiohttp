@@ -1,0 +1,2 @@
+app:
+  cls: aioworkers_aiohttp.app.Application
