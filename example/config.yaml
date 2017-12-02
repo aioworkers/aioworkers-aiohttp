@@ -1,2 +1,11 @@
 app:
-  cls: aioworkers_aiohttp.app.Application
+  router:
+    swagger_ui: /
+    version_ui: 3
+
+  resources:
+    /status:
+      get: handlers.status
+
+status:
+  data: 1
