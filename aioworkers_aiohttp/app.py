@@ -9,9 +9,20 @@ class Application(web.Application):
         self.context = context
         if 'client_max_size' in config:
             kwargs['client_max_size'] = parse_size(config.client_max_size)
+
+        if not config.get('router'):
+            pass
+        elif isinstance(config.router, str):
+            cls = import_name(config.router)
+            kwargs['router'] = cls()
+        else:
+            cfg = config.router.copy()
+            cls = import_name(cfg.pop('cls'))
+            kwargs['router'] = cls(**cfg)
+
         super().__init__(**kwargs)
 
-        resources = self.config.get('resources', ())
+        resources = self.config.get('resources')
         for url, name, routes in sort_resources(resources):
             resource = self.router.add_resource(url, name=name)
             for method, handler in routes.items():
@@ -29,10 +40,15 @@ class Application(web.Application):
         web.run_app(self, host=host, port=port, loop=self.context.loop)
 
 
-def iter_resouces(resources):
+def iter_resources(resources):
+    if not resources:
+        return
+    elif not isinstance(resources, dict):
+        raise TypeError(
+            'Resources should be described in the dict %s' % resources)
     for name, sub in resources.items():
         if not name.startswith('/'):
-            for p, u, n, rs in iter_resouces(sub):
+            for p, u, n, rs in iter_resources(sub):
                 yield p, u, ':'.join((name, n)), rs
             continue
         url = name
@@ -43,5 +59,5 @@ def iter_resouces(resources):
 
 
 def sort_resources(resources):
-    r = sorted(iter_resouces(resources), key=lambda x: x[0])
+    r = sorted(iter_resources(resources), key=lambda x: x[0])
     return map(lambda x: x[1:], r)
