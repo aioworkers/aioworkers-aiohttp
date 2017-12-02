@@ -20,6 +20,13 @@ class Application(web.Application):
             cls = import_name(cfg.pop('cls'))
             kwargs['router'] = cls(**cfg)
 
+        if not config.get('middlewares'):
+            pass
+        elif isinstance(config.middlewares, list):
+            kwargs['middlewares'] = map(import_name, config.middlewares)
+        else:
+            raise TypeError('Middlewares should be described in list')
+
         super().__init__(**kwargs)
 
         resources = self.config.get('resources')
