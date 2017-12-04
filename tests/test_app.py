@@ -6,12 +6,15 @@ import yaml
 def config(config):
     config(yaml.load("""
     app:
+      router:
+        search_in_modules:
+          - datetime
       resources:
         /timestamp:
           name: timestamp
           priority: 1
           get:
-            handler: time.time
+            handler: datetime.datetime.now
         block:
           /date:
             name: date

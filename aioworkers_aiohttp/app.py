@@ -1,3 +1,5 @@
+from pathlib import Path
+
 from aiohttp import web
 from aioworkers.humanize import parse_size
 from aioworkers.utils import import_name
@@ -18,6 +20,10 @@ class Application(web.Application):
         else:
             cfg = config.router.copy()
             cls = import_name(cfg.pop('cls'))
+            modules = map(import_name, cfg.pop('search_in_modules', ()))
+            dirs = [Path(x.__file__).parent for x in modules]
+            dirs.extend(cfg.get('search_dirs', ()))
+            cfg['search_dirs'] = dirs
             kwargs['router'] = cls(**cfg)
 
         if not config.get('middlewares'):
@@ -31,8 +37,13 @@ class Application(web.Application):
 
         resources = self.config.get('resources')
         for url, name, routes in sort_resources(resources):
+            if 'include' in routes:
+                self.router.include(
+                    routes['include'], name=name, basePath=url,
+                    operationId_mapping=routes.get('mapping'))
             resource = self.router.add_resource(url, name=name)
-            for method, handler in routes.items():
+            for method, params in routes.items():
+                handler = params.pop('handler')
                 resource.add_route(method.upper(), import_name(handler))
 
         context.run_forever = self.run_forever
@@ -52,19 +63,30 @@ def iter_resources(resources):
         return
     elif not isinstance(resources, dict):
         raise TypeError(
-            'Resources should be described in the dict %s' % resources)
+            'Resources should be described in dict %s' % resources)
     for name, sub in resources.items():
-        if not name.startswith('/'):
+        if not isinstance(sub, dict):
+            raise TypeError(
+                'Resource should be described in dict %s' % sub)
+        routes = sub.copy()
+        priority = routes.pop('priority', 0)
+        if 'include' in routes:
+            yield priority, None, name, sub
+            continue
+        elif not name.startswith('/'):
             for p, u, n, rs in iter_resources(sub):
-                yield p, u, ':'.join((name, n)), rs
+                yield priority + p, u, ':'.join((name, n)), rs
             continue
         url = name
-        routes = sub.copy()
         name = routes.pop('name', None)
-        priority = routes.pop('priority', 0)
+        for k, v in routes.items():
+            if 'include' in routes:
+                continue
+            elif isinstance(v, str):
+                routes[k] = {'handler': v}
         yield priority, url, name, routes
 
 
 def sort_resources(resources):
-    r = sorted(iter_resources(resources), key=lambda x: x[0])
+    r = sorted(iter_resources(resources), key=lambda x: x[0], reverse=True)
     return map(lambda x: x[1:], r)
