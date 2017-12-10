@@ -20,10 +20,6 @@ class Application(web.Application):
         else:
             cfg = config.router.copy()
             cls = import_name(cfg.pop('cls'))
-            modules = map(import_name, cfg.pop('search_in_modules', ()))
-            dirs = [Path(x.__file__).parent for x in modules]
-            dirs.extend(cfg.get('search_dirs', ()))
-            cfg['search_dirs'] = dirs
             kwargs['router'] = cls(**cfg)
 
         if not config.get('middlewares'):
@@ -38,9 +34,8 @@ class Application(web.Application):
         resources = self.config.get('resources')
         for url, name, routes in sort_resources(resources):
             if 'include' in routes:
-                self.router.include(
-                    routes['include'], name=name, basePath=url,
-                    operationId_mapping=routes.get('mapping'))
+                self.router.include(**routes)
+                continue
             resource = self.router.add_resource(url, name=name)
             for method, params in routes.items():
                 handler = params.pop('handler')
@@ -71,7 +66,10 @@ def iter_resources(resources):
         routes = sub.copy()
         priority = routes.pop('priority', 0)
         if 'include' in routes:
-            yield priority, None, name, sub
+            url = name if name.startswith('/') else None
+            sub.setdefault('base', url)
+            assert sub['base'] == url
+            yield priority, url, name, sub
             continue
         elif not name.startswith('/'):
             for p, u, n, rs in iter_resources(sub):
