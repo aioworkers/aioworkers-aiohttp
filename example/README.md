@@ -1,4 +1,4 @@
-# Example to run aiohtpp application via aioworkers
+# Example to run aiohttp application via aioworkers
 
 ## Run
 
