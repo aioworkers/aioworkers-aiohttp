@@ -1,5 +1,3 @@
-from pathlib import Path
-
 from aiohttp import web
 from aioworkers.humanize import parse_size
 from aioworkers.utils import import_name
