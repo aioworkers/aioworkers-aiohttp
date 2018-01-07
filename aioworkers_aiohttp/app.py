@@ -7,6 +7,11 @@ class Application(web.Application):
     def __init__(self, config, *, context, **kwargs):
         self.config = config
         self.context = context
+
+        debug = config.get('debug')
+        if isinstance(debug, bool):
+            kwargs.setdefault('debug', debug)
+
         if 'client_max_size' in config:
             kwargs['client_max_size'] = parse_size(config.client_max_size)
 
