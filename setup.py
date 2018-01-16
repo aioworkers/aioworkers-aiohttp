@@ -9,6 +9,7 @@ requirements = [
 
 test_requirements = [
     'pytest',
+    'pytest-aiohttp',
 ]
 
 setup(
