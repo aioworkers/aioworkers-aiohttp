@@ -2,6 +2,8 @@ from aiohttp import web
 from aioworkers.humanize import parse_size
 from aioworkers.utils import import_name
 
+from .abc import AbstractSwaggerRouter
+
 
 class Application(web.Application):
     def __init__(self, config, *, context, **kwargs):
@@ -34,20 +36,27 @@ class Application(web.Application):
 
         super().__init__(**kwargs)
 
+        if config.get('main'):
+            context.run_forever = self.run_forever
+
+    async def init(self):
         resources = self.config.get('resources')
+        is_swagger = isinstance(self.router, AbstractSwaggerRouter)
         for url, name, routes in sort_resources(resources):
             if 'include' in routes:
                 self.router.include(**routes)
                 continue
             resource = self.router.add_resource(url, name=name)
-            for method, params in routes.items():
-                handler = params.pop('handler')
-                resource.add_route(method.upper(), import_name(handler))
-
-        context.run_forever = self.run_forever
-
-    async def init(self):
-        pass
+            for method, operation in routes.items():
+                handler = operation.pop('handler')
+                if handler.startswith('.'):
+                    handler = self.context[handler[1:]]
+                elif not is_swagger:
+                    handler = import_name(handler)
+                if is_swagger:
+                    resource.add_route(method.upper(), handler, swagger_data=operation)
+                else:
+                    resource.add_route(method.upper(), handler)
 
     def run_forever(self, host=None, port: int=None):
         gconf = self.context.config
@@ -79,7 +88,9 @@ def iter_resources(resources):
             continue
         elif not name.startswith('/'):
             for p, u, n, rs in iter_resources(sub):
-                yield priority + p, u, ':'.join((name, n)), rs
+                if n:
+                    n = ':'.join((name, n))
+                yield p, u, n, rs
             continue
         url = name
         name = routes.pop('name', None)
