@@ -64,8 +64,7 @@ class Application(web.Application):
         port = port or gconf.http.port
         access_log_format = gconf.http.get('access_log_format', None)
         web.run_app(self, host=host, port=port,
-                    access_log_format=access_log_format,
-                    loop=self.context.loop)
+                    access_log_format=access_log_format)
 
 
 def iter_resources(resources):
