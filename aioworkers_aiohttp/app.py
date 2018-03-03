@@ -60,11 +60,17 @@ class Application(web.Application):
 
     def run_forever(self, host=None, port: int=None):
         gconf = self.context.config
+        kwargs = {}
         host = host or gconf.http.host
+        if host:
+            kwargs['host'] = host
         port = port or gconf.http.port
+        if port:
+            kwargs['port'] = port
         access_log_format = gconf.http.get('access_log_format', None)
-        web.run_app(self, host=host, port=port,
-                    access_log_format=access_log_format)
+        if access_log_format:
+            kwargs['access_log_format'] = access_log_format
+        web.run_app(self, **kwargs)
 
 
 def iter_resources(resources):
