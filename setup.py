@@ -14,7 +14,7 @@ test_requirements = [
 
 setup(
     name='aioworkers_aiohttp',
-    version='0.2.0',
+    version='0.2.1',
     description="",
     author="Alexander Malev",
     author_email='yttrium@somedev.ru',
