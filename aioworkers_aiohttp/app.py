@@ -72,6 +72,12 @@ class Application(web.Application):
             kwargs['access_log_format'] = access_log_format
         web.run_app(self, **kwargs)
 
+    def make_handler(self, *, loop=None, **kwargs):
+        if self.config.access_log_class:
+            cls = import_name(self.config.pop('access_log_class'))
+            kwargs['access_log_class'] = cls
+        return super().make_handler(loop=loop, **kwargs)
+
 
 def iter_resources(resources):
     if not resources:

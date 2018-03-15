@@ -2,7 +2,8 @@ app:
   router:
     swagger_ui: /
     version_ui: 3
-
+  # Custom access log class
+  access_log_class: access_log_class.DebugAccessLogClass
   resources:
     /status:
       get: handlers.status
