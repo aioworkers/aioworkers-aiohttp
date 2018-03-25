@@ -9,6 +9,7 @@ class Application(web.Application):
     def __init__(self, config, *, context, **kwargs):
         self.config = config
         self.context = context
+        cors = None
 
         debug = config.get('debug')
         if isinstance(debug, bool):
@@ -25,6 +26,7 @@ class Application(web.Application):
         else:
             cfg = config.router.copy()
             cls = import_name(cfg.pop('cls'))
+            cors = cfg.pop('cors', None)
             kwargs['router'] = cls(**cfg)
 
         if not config.get('middlewares'):
@@ -35,6 +37,9 @@ class Application(web.Application):
             raise TypeError('Middlewares should be described in list')
 
         super().__init__(**kwargs)
+
+        if cors is not None:
+            kwargs['router'].set_cors(self, **cors)
 
         if config.get('main'):
             context.run_forever = self.run_forever
