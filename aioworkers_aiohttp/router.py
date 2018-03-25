@@ -15,11 +15,11 @@ class Router(SwaggerRouter, AbstractSwaggerRouter):
         super().__init__(**kwargs)
 
     def include(self, include, *,
-                base=None,
+                prefix=None,
                 mapping=None,
                 name=None):
 
         return super().include(
-            include, basePath=base,
+            include, basePath=prefix,
             operationId_mapping=mapping,
             name=name)

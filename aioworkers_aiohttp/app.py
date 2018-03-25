@@ -109,7 +109,7 @@ def iter_resources(resources, prefix=''):
             else:
                 url = prefix
             if url:
-                routes['base'] = url + routes.get('base', '')
+                routes['prefix'] = url + routes.get('prefix', '')
             yield priority, url or None, name, routes
             continue
         elif not name.startswith('/'):
