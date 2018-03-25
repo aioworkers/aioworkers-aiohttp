@@ -42,6 +42,7 @@ class Application(web.Application):
     async def init(self):
         resources = self.config.get('resources')
         is_swagger = isinstance(self.router, AbstractSwaggerRouter)
+        default_validate = self.config.get('router.default_validate', True)
         for url, name, routes in sort_resources(resources):
             if 'include' in routes:
                 self.router.include(**routes)
@@ -49,12 +50,13 @@ class Application(web.Application):
             resource = self.router.add_resource(url, name=name)
             for method, operation in routes.items():
                 handler = operation.pop('handler')
+                validate = operation.pop('validate', default_validate)
                 if handler.startswith('.'):
                     handler = self.context[handler[1:]]
                 elif not is_swagger:
                     handler = import_name(handler)
                 if is_swagger:
-                    resource.add_route(method.upper(), handler, swagger_data=operation)
+                    resource.add_route(method.upper(), handler, swagger_data=operation, validate=validate)
                 else:
                     resource.add_route(method.upper(), handler)
 
