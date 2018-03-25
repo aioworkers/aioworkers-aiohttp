@@ -87,26 +87,33 @@ class Application(web.Application):
         return super().make_handler(loop=loop, **kwargs)
 
 
-def iter_resources(resources):
+def iter_resources(resources, prefix=''):
     if not resources:
         return
     elif not isinstance(resources, dict):
         raise TypeError(
             'Resources should be described in dict %s' % resources)
+    prefix += resources.get('prefix', '')
     for name, sub in resources.items():
-        if not isinstance(sub, dict):
+        if name == 'prefix':
+            continue
+        elif not isinstance(sub, dict):
             raise TypeError(
                 'Resource should be described in dict %s' % sub)
         routes = sub.copy()
         priority = routes.pop('priority', 0)
         if 'include' in routes:
             url = name if name.startswith('/') else None
-            sub.setdefault('base', url)
-            assert sub['base'] == url
-            yield priority, url, name, sub
+            if url:
+                url = prefix + url
+            else:
+                url = prefix
+            if url:
+                routes['base'] = url + routes.get('base', '')
+            yield priority, url or None, name, routes
             continue
         elif not name.startswith('/'):
-            for p, u, n, rs in iter_resources(sub):
+            for p, u, n, rs in iter_resources(sub, prefix):
                 if n:
                     n = ':'.join((name, n))
                 yield p, u, n, rs
@@ -118,7 +125,7 @@ def iter_resources(resources):
                 continue
             elif isinstance(v, str):
                 routes[k] = {'handler': v}
-        yield priority, url, name, routes
+        yield priority, prefix + url, name, routes
 
 
 def sort_resources(resources):
