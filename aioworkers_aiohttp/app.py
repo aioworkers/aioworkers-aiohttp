@@ -41,6 +41,14 @@ class Application(web.Application):
         if cors is not None:
             kwargs['router'].set_cors(self, **cors)
 
+        for signal in ('on_startup', 'cleanup_ctx', 'on_cleanup', 'on_response_prepare'):
+            sigs = config.get(signal)
+            signals = getattr(self, signal, None)
+            if sigs and signals is not None:
+                for _, s in sorted(sigs.items(), key=lambda x: x[0]):
+                    coro = import_name(s)
+                    signals.append(coro)
+
         if config.get('main'):
             context.run_forever = self.run_forever
 

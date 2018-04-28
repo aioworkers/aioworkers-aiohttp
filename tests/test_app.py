@@ -2,6 +2,10 @@ import pytest
 import yaml
 
 
+async def startup(app):
+    app['1234'] = None
+
+
 @pytest.fixture
 def config(config):
     config(yaml.load("""
@@ -19,6 +23,8 @@ def config(config):
           /date:
             name: date
             get: datetime.datetime.now
+      on_startup:
+        s1: tests.test_app.startup
     """))
     return config
 
@@ -27,7 +33,3 @@ async def test_init(context):
     assert 'app' in context
     assert 'timestamp' in context.app.router
     assert 'block:date' in context.app.router
-
-
-async def test_native_router(context):
-    pass
