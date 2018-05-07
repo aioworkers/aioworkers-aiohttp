@@ -25,7 +25,10 @@ class Supervisor(supervisor.Supervisor):
 
     def get_child_config(self):
         c = super().get_child_config()
-        c['params.port'] = next(self._iterport)
-        c.daemon = True
-        c.setdefault('cls', utils.import_uri(subprocess.Subprocess))
+        params = c.get('params') or {}
+        if params:
+            params = dict(params)
+        params['port'] = next(self._iterport)
+        cls = c.get('cls') or utils.import_uri(subprocess.Subprocess)
+        c = c.new_child(params=params, daemon=True, cls=cls)
         return c

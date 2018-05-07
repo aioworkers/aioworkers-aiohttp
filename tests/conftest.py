@@ -12,7 +12,9 @@ CONFIG_PATH = Path(aioworkers_aiohttp.__file__).with_name('plugin.ini')
 
 @pytest.fixture
 def config():
-    return Config().load(CONFIG_PATH)
+    c = Config()
+    c.load(CONFIG_PATH)
+    return c
 
 
 @pytest.fixture

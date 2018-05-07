@@ -4,7 +4,7 @@ import yaml
 
 @pytest.fixture
 def config(config):
-    config(yaml.load("""
+    config.update(yaml.load("""
     s:
       cls: aioworkers_aiohttp.supervisor.Supervisor
       ports: 5000-6000

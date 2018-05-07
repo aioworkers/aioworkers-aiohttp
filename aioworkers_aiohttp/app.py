@@ -1,3 +1,5 @@
+from collections import Mapping
+
 from aiohttp import web
 from aioworkers.humanize import parse_size
 from aioworkers.utils import import_name
@@ -24,7 +26,7 @@ class Application(web.Application):
             cls = import_name(config.router)
             kwargs['router'] = cls()
         else:
-            cfg = config.router.copy()
+            cfg = dict(config.router)
             cls = import_name(cfg.pop('cls'))
             cors = cfg.pop('cors', None)
             kwargs['router'] = cls(**cfg)
@@ -62,6 +64,11 @@ class Application(web.Application):
                 continue
             resource = self.router.add_resource(url, name=name)
             for method, operation in routes.items():
+                if not isinstance(operation, Mapping):
+                    raise TypeError(
+                        'operation for {method} {url} expected Mapping, not {t}'.format(
+                            method=method.upper(), url=url, t=type(operation)))
+                operation = dict(operation)
                 handler = operation.pop('handler')
                 validate = operation.pop('validate', default_validate)
                 if handler.startswith('.'):
@@ -98,17 +105,17 @@ class Application(web.Application):
 def iter_resources(resources, prefix=''):
     if not resources:
         return
-    elif not isinstance(resources, dict):
+    elif not isinstance(resources, Mapping):
         raise TypeError(
             'Resources should be described in dict %s' % resources)
     prefix += resources.get('prefix', '')
     for name, sub in resources.items():
         if name == 'prefix':
             continue
-        elif not isinstance(sub, dict):
+        elif not isinstance(sub, Mapping):
             raise TypeError(
                 'Resource should be described in dict %s' % sub)
-        routes = sub.copy()
+        routes = dict(sub)
         priority = routes.pop('priority', 0)
         if 'include' in routes:
             url = name if name.startswith('/') else None

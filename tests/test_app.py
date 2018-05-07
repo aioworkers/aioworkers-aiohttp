@@ -8,7 +8,7 @@ async def startup(app):
 
 @pytest.fixture
 def config(config):
-    config(yaml.load("""
+    config.update(yaml.load("""
     app:
       router:
         search_in_modules:

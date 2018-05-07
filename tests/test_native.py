@@ -4,7 +4,7 @@ import yaml
 
 @pytest.fixture
 def config(config):
-    config(yaml.load("""
+    config.update(yaml.load("""
     app:
       router: null
       resources:
