@@ -3,8 +3,8 @@
 from setuptools import setup, find_packages
 
 requirements = [
-    'aioworkers>=0.10.0',
-    'aiohttp-apiset>=0.9',
+    'aioworkers>=0.11',
+    'aiohttp-apiset>=0.9.1',
 ]
 
 test_requirements = [
@@ -14,7 +14,7 @@ test_requirements = [
 
 setup(
     name='aioworkers-aiohttp',
-    version='0.3',
+    version='0.4',
     description="",
     author="Alexander Malev",
     author_email='yttrium@somedev.ru',
