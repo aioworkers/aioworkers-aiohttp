@@ -1,3 +1,5 @@
+import tempfile
+
 import pytest
 from aiohttp import web
 from yarl import URL
@@ -6,6 +8,18 @@ from aioworkers.core.config import Config
 from aioworkers.core.context import Context
 from aioworkers.storage import StorageError
 from aioworkers_aiohttp.storage import Storage
+
+
+@pytest.fixture
+def config(config):
+    with tempfile.TemporaryDirectory() as d:
+        config.update(
+            fs=dict(
+                cls='aioworkers.storage.filesystem.FileSystemStorage',
+                path=d,
+                format='json',
+            ))
+        return config
 
 
 async def test_set_get(loop, test_client):
@@ -18,19 +32,39 @@ async def test_set_get(loop, test_client):
 
     data = 'Python'
     config = Config()
-    config.update(dict(
+    config.update(
         storage=dict(
-            cls='aioworkers.storage.http.Storage',
+            cls='aioworkers_aiohttp.storage.Storage',
             prefix=str(url),
             semaphore=1,
             format='json',
-        ),
     ))
     async with Context(config=config, loop=loop) as context:
         storage = context.storage
         assert data in await storage.get('test/1')
         with pytest.raises(StorageError):
             await storage.set('test/1', data)
+
+
+async def test_copy(loop, test_client, config):
+    app = web.Application()
+    app.router.add_get(
+        '/test/1',
+        lambda x: web.json_response(["Python"]))
+    client = await test_client(app)
+    url = client.make_url('/')
+
+    data = 'Python'
+    config.update(
+        storage=dict(
+            cls='aioworkers_aiohttp.storage.Storage',
+            prefix=str(url),
+            semaphore=1,
+            format='json',
+    ))
+    async with Context(config=config, loop=loop) as context:
+        await context.storage.copy('test/1', context.fs, 'test/1')
+        assert data in await context.fs.get('test/1')
 
 
 async def test_format(loop):
