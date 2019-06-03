@@ -51,9 +51,6 @@ class Application(web.Application):
                     coro = import_name(s)
                     signals.append(coro)
 
-        if config.get('main'):
-            context.run_forever = self.run_forever
-
     async def init(self):
         resources = self.config.get('resources')
         is_swagger = isinstance(self.router, AbstractSwaggerRouter)
@@ -79,17 +76,6 @@ class Application(web.Application):
                     resource.add_route(method.upper(), handler, swagger_data=operation, validate=validate)
                 else:
                     resource.add_route(method.upper(), handler)
-
-    def run_forever(self, host=None, port: int=None):
-        gconf = self.context.config
-        kwargs = {}
-        host = host or gconf.http.host
-        if host:
-            kwargs['host'] = host
-        port = port or gconf.http.port
-        if port:
-            kwargs['port'] = port
-        web.run_app(self, **kwargs)
 
     def make_handler(self, *, loop=None, **kwargs):
         access_log_format = self.config.get('access_log_format')
