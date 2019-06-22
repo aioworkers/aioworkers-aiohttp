@@ -2,8 +2,10 @@
 
 from setuptools import setup, find_packages
 
+version = __import__('aioworkers_aiohttp').__version__
+
 requirements = [
-    'aioworkers>=0.13a4',
+    'aioworkers>=0.13.0',
     'aiohttp-apiset>=0.9.6',
 ]
 
@@ -14,7 +16,7 @@ test_requirements = [
 
 setup(
     name='aioworkers-aiohttp',
-    version='0.4',
+    version=version,
     description="",
     author="Alexander Malev",
     author_email='yttrium@somedev.ru',
