@@ -1,10 +1,9 @@
 import pytest
-import yaml
 
 
 @pytest.fixture
-def config(config):
-    config.update(yaml.load("""
+def config_yaml():
+    return """
     s:
       cls: aioworkers_aiohttp.supervisor.Supervisor
       ports: 5000-6000
@@ -12,8 +11,7 @@ def config(config):
       child:
         shell: false
         cmd: '{python} -m aiohttp.web --port {port}'
-    """))
-    return config
+    """
 
 
 async def test_conf(context):
