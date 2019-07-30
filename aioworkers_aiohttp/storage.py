@@ -56,7 +56,7 @@ class RoStorage(base.AbstractStorageReadOnly):
 
     def raw_key(self, key):
         if self._prefix:
-            url = self._prefix / key
+            url = self._prefix.join(key)
         elif self._template and isinstance(key, Mapping):
             url = URL(self._template.format_map(key))
         elif self._template and isinstance(key, Sequence):
