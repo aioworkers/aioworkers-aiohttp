@@ -56,7 +56,13 @@ class RoStorage(base.AbstractStorageReadOnly):
 
     def raw_key(self, key):
         if self._prefix:
-            url = self._prefix.join(key)
+            if isinstance(key, str):
+                k = URL(key)
+            elif isinstance(key, URL):
+                k = key
+            else:
+                raise TypeError('Expected URL or str', key)
+            url = self._prefix.join(k)
         elif self._template and isinstance(key, Mapping):
             url = URL(self._template.format_map(key))
         elif self._template and isinstance(key, Sequence):
