@@ -19,9 +19,13 @@ class WebServer(SocketServer):
     async def init(self):
         access_log_format = self.config.get('access_log.format')
         if not access_log_format:
-            access_log_format = self.context.config.get(
-                'logging.formatters.access.format'
-            )
+            cfg = self.context.config.logging
+            for i in 'formatters.access'.split('.'):
+                if not cfg:
+                    break
+                cfg = cfg.get(i)
+            else:
+                access_log_format = cfg.get('format')
         if access_log_format:
             self._kwargs['access_log_format'] = access_log_format
 
