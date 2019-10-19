@@ -43,7 +43,10 @@ class Application(web.Application):
         if cors is not None:
             kwargs['router'].set_cors(self, **cors)
 
-        for signal in ('on_startup', 'cleanup_ctx', 'on_cleanup', 'on_response_prepare'):
+        for signal in (
+            'on_startup', 'cleanup_ctx',
+            'on_cleanup', 'on_response_prepare',
+        ):
             sigs = config.get(signal)
             signals = getattr(self, signal, None)
             if sigs and signals is not None:
@@ -63,8 +66,11 @@ class Application(web.Application):
             for method, operation in routes.items():
                 if not isinstance(operation, Mapping):
                     raise TypeError(
-                        'operation for {method} {url} expected Mapping, not {t}'.format(
-                            method=method.upper(), url=url, t=type(operation)))
+                        'operation for {method} {url} expected Mapping, '
+                        'not {t}'.format(
+                            method=method.upper(), url=url, t=type(operation),
+                        )
+                    )
                 operation = dict(operation)
                 handler = operation.pop('handler')
                 validate = operation.pop('validate', default_validate)
@@ -73,7 +79,10 @@ class Application(web.Application):
                 elif not is_swagger:
                     handler = import_name(handler)
                 if is_swagger:
-                    resource.add_route(method.upper(), handler, swagger_data=operation, validate=validate)
+                    resource.add_route(
+                        method.upper(), handler,
+                        swagger_data=operation, validate=validate,
+                    )
                 else:
                     resource.add_route(method.upper(), handler)
 

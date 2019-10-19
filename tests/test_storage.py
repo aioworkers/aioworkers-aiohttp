@@ -2,11 +2,11 @@ import tempfile
 
 import pytest
 from aiohttp import web
-from yarl import URL
-
 from aioworkers.core.config import Config
 from aioworkers.core.context import Context
 from aioworkers.storage import StorageError
+from yarl import URL
+
 from aioworkers_aiohttp.storage import Storage
 
 
@@ -38,7 +38,8 @@ async def test_set_get(loop, test_client):
             prefix=str(url),
             semaphore=1,
             format='json',
-    ))
+        )
+    )
     async with Context(config=config, loop=loop) as context:
         storage = context.storage
         assert data in await storage.get('test/1')
@@ -61,7 +62,8 @@ async def test_copy(loop, test_client, config):
             prefix=str(url),
             semaphore=1,
             format='json',
-    ))
+        )
+    )
     async with Context(config=config, loop=loop) as context:
         await context.storage.copy('test/1', context.fs, 'test/1')
         assert data in await context.fs.get('test/1')

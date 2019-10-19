@@ -1,7 +1,7 @@
 from collections import Mapping
 
-from aioworkers.worker import subprocess, supervisor
 from aioworkers import utils
+from aioworkers.worker import subprocess, supervisor
 
 
 class Supervisor(supervisor.Supervisor):

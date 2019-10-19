@@ -3,8 +3,8 @@ import json
 import logging
 from collections import Mapping, Sequence
 
-from aiohttp import client, ClientOSError
-from aioworkers.storage import base, StorageError
+from aiohttp import ClientOSError, client
+from aioworkers.storage import StorageError, base
 from yarl import URL
 
 
