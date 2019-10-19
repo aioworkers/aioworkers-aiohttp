@@ -86,16 +86,6 @@ class Application(web.Application):
                 else:
                     resource.add_route(method.upper(), handler)
 
-    def make_handler(self, *, loop=None, **kwargs):
-        access_log_format = self.config.get('access_log_format')
-        if access_log_format:
-            kwargs['access_log_format'] = access_log_format
-        access_log_class = self.config.get('access_log_class')
-        if access_log_class:
-            cls = import_name(access_log_class)
-            kwargs['access_log_class'] = cls
-        return super().make_handler(loop=loop, **kwargs)
-
 
 def iter_resources(resources, prefix=''):
     if not resources:
