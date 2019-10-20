@@ -4,12 +4,20 @@ from aioworkers.utils import import_name
 
 
 class WebServer(SocketServer):
+    port = None
+
+    @classmethod
+    def set_port(cls, port: int) -> None:
+        cls.port = port
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self._runner = None
         self._kwargs = {}
 
     def set_config(self, config):
+        if self.port:
+            config = config.new_child(port=self.port)
         super().set_config(config)
         access_log_cls = self.config.get('access_log.cls')
         if access_log_cls:

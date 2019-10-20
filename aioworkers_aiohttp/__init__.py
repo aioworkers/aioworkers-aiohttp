@@ -4,6 +4,8 @@ from typing import Dict, Iterable, Tuple
 
 from aioworkers.core.plugin import Plugin
 
+from .server import WebServer
+
 
 try:
     from .version import __version__
@@ -36,5 +38,5 @@ class plugin(Plugin):
         namespace: argparse.Namespace,
     ) -> Tuple[argparse.Namespace, Iterable[str]]:
         if namespace.port:
-            self._config['http.port'] = namespace.port
+            WebServer.set_port(namespace.port)
         return namespace, args
