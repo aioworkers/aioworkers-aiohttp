@@ -1,8 +1,8 @@
-#!/usr/bin/env python
+import re
+from pathlib import Path
 
-from setuptools import setup, find_packages
+from setuptools import find_packages, setup
 
-version = __import__('aioworkers_aiohttp').__version__
 
 requirements = [
     'aioworkers>=0.13.0',
@@ -14,9 +14,27 @@ test_requirements = [
     'pytest-aiohttp',
 ]
 
+
+def read(f):
+    path = Path(__file__).parent / f
+    if not path.exists():
+        return ''
+    return path.read_text(encoding='latin1').strip()
+
+
+def get_version():
+    text = read('aioworkers_aiohttp/version.py')
+    if not text:
+        text = read('aioworkers_aiohttp/__init__.py')
+    try:
+        return re.findall(r"^__version__ = '([^']+)'$", text, re.M)[0]
+    except IndexError:
+        raise RuntimeError('Unable to determine version.')
+
+
 setup(
     name='aioworkers-aiohttp',
-    version=version,
+    version=get_version(),
     description="",
     author="Alexander Malev",
     author_email='yttrium@somedev.ru',
