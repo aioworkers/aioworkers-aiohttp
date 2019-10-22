@@ -14,6 +14,8 @@ test_requirements = [
     'pytest-aiohttp',
 ]
 
+pkg = 'aioworkers_aiohttp'
+
 
 def read(f):
     path = Path(__file__).parent / f
@@ -23,9 +25,9 @@ def read(f):
 
 
 def get_version():
-    text = read('aioworkers_aiohttp/version.py')
+    text = read(pkg + '/version.py')
     if not text:
-        text = read('aioworkers_aiohttp/__init__.py')
+        text = read(pkg + '/__init__.py')
     try:
         return re.findall(r"__version__ = '([^']+)'$", text, re.M)[0]
     except IndexError:
@@ -39,7 +41,7 @@ setup(
     author="Alexander Malev",
     author_email='yttrium@somedev.ru',
     url='https://github.com/aioworkers/aioworkers-aiohttp',
-    packages=[i for i in find_packages() if i.startswith('aioworkers_aiohttp')],
+    packages=find_packages(include=pkg),
     include_package_data=True,
     install_requires=requirements,
     license="Apache Software License 2.0",
