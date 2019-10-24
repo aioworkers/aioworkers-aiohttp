@@ -11,9 +11,9 @@ class WebServer(SocketServer):
         cls.port = port
 
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
         self._runner = None
         self._kwargs = {}
+        super().__init__(*args, **kwargs)
 
     def set_config(self, config):
         if self.port:
@@ -27,11 +27,11 @@ class WebServer(SocketServer):
     async def init(self):
         access_log_format = self.config.get('access_log.format')
         if not access_log_format:
-            cfg = self.context.config.logging
-            for i in 'formatters.access'.split('.'):
+            cfg = self.context.config
+            for i in 'logging.formatters.access'.split('.'):
                 if not cfg:
                     break
-                cfg = cfg.get(i)
+                cfg = cfg.get(i, {})
             else:
                 access_log_format = cfg.get('format')
         if access_log_format:
