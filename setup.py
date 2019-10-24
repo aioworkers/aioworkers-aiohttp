@@ -41,7 +41,7 @@ setup(
     author="Alexander Malev",
     author_email='yttrium@somedev.ru',
     url='https://github.com/aioworkers/aioworkers-aiohttp',
-    packages=find_packages(include=pkg),
+    packages=find_packages(include=[pkg]),
     include_package_data=True,
     install_requires=requirements,
     license="Apache Software License 2.0",
