@@ -1,10 +1,9 @@
 import pytest
-import yaml
 
 
 @pytest.fixture
-def config(config):
-    config.update(yaml.load("""
+def config_yaml():
+    return """
     app:
       router: null
       resources:
@@ -19,8 +18,7 @@ def config(config):
             get: datetime.datetime.now
     app2:
        cls: aioworkers_aiohttp.app.Application
-    """))
-    return config
+    """
 
 
 async def test_init(context):

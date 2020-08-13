@@ -11,10 +11,10 @@ aiohttp = "*"
 aiohttp-apiset = "*"
 
 [dev-packages]
+isort = "*"
+flake8 = "*"
+mypy = "*"
 pytest-aioworkers = "*"
-pytest-flake8 = "*"
-pytest-mypy = "*"
 pytest-mock = "*"
 pytest-cov = "*"
 pytest-sugar = "*"
-pytest-isort = "*"
