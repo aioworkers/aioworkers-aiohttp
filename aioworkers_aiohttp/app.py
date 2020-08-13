@@ -64,6 +64,13 @@ class Application(web.Application):
             if 'include' in routes:
                 self.router.include(**routes)
                 continue
+            if 'static' in routes:
+                static_params = routes.pop('static')
+                if isinstance(static_params, Mapping):
+                    kwargs = static_params
+                else:
+                    kwargs = {'path': static_params}
+                self.router.add_static(url, **kwargs)
             resource = self.router.add_resource(url, name=name)
             for method, operation in routes.items():
                 if not isinstance(operation, Mapping):
@@ -122,6 +129,8 @@ def iter_resources(resources, prefix=''):
         name = routes.pop('name', None)
         for k, v in routes.items():
             if 'include' in routes:
+                continue
+            elif 'static' in routes:
                 continue
             elif isinstance(v, str):
                 routes[k] = {'handler': v}
