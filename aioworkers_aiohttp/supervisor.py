@@ -6,7 +6,11 @@ from aioworkers.worker import subprocess, supervisor
 
 class Supervisor(supervisor.Supervisor):
     def __init__(self, *args, **kwargs):
+        self._iterport = iter(())
         super().__init__(*args, **kwargs)
+
+    def set_config(self, config):
+        super().set_config(config)
         self._iterport = self.gen_port(self.config.ports)
 
     def gen_port(self, ports):
