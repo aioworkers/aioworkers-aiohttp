@@ -34,7 +34,9 @@ class Application(web.Application):
         if not config.get('middlewares'):
             pass
         elif isinstance(config.middlewares, list):
-            kwargs['middlewares'] = map(import_name, config.middlewares)
+            kwargs['middlewares'] = map(
+                self.context.get_object, config.middlewares,
+            )
         else:
             raise TypeError('Middlewares should be described in list')
 
@@ -51,7 +53,7 @@ class Application(web.Application):
             signals = getattr(self, signal, None)
             if sigs and signals is not None:
                 for _, s in sorted(sigs.items(), key=lambda x: x[0]):
-                    coro = import_name(s)
+                    coro = self.context.get_object(s)
                     signals.append(coro)
 
     async def init(self):
@@ -74,10 +76,8 @@ class Application(web.Application):
                 operation = dict(operation)
                 handler = operation.pop('handler')
                 validate = operation.pop('validate', default_validate)
-                if handler.startswith('.'):
-                    handler = self.context[handler[1:]]
-                elif not is_swagger:
-                    handler = import_name(handler)
+                if not is_swagger or handler.startswith('.'):
+                    handler = self.context.get_object(handler)
                 if is_swagger:
                     resource.add_route(
                         method.upper(), handler,
