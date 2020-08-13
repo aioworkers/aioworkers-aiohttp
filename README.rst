@@ -42,12 +42,12 @@ Example
 
   app:
     resources:
+      /html:
+        static: static/html
+      /css:
+        static:
+          path: static/css
       api:
-        /html:
-          static: static/html
-        /css:
-          static:
-            path: static/css
         prefix: /api
         pets:
           /pet/{pet_id}:
