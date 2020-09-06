@@ -57,6 +57,12 @@ class Application(web.Application):
                     signals.append(coro)
 
     async def init(self):
+        for routes_line in self.config.get('routes') or ():
+            routes = self.context.get_object(routes_line)
+            if isinstance(routes, web.AbstractRouteDef):
+                self.add_routes([routes])
+            else:
+                self.add_routes(routes)
         resources = self.config.get('resources')
         is_swagger = isinstance(self.router, AbstractSwaggerRouter)
         default_validate = self.config.get('router.default_validate', True)
