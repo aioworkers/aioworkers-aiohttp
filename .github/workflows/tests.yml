@@ -18,6 +18,12 @@ jobs:
       uses: actions/setup-python@v2
       with:
         python-version: ${{ matrix.python-version }}
+    - name: Prepare venv
+      run: |
+        pip install --user pip setuptools
+        pip install --user pipenv
+        python -m pipenv --three
+        python -m pipenv run pip install -U pip setuptools
     - name: isort
       if: ${{ matrix.python-version == '3.6' && matrix.os == 'ubuntu-latest' }}
       run: |
@@ -35,11 +41,7 @@ jobs:
         mypy aioworkers_aiohttp
     - name: Install dependencies
       run: |
-        pip install --user pip setuptools
-        pip install --user pipenv
-        python -m pipenv --three
-        python -m pipenv run pip install -U pip setuptools codecov
-        python -m pipenv run pip install pytest-aioworkers pytest-mock pytest-cov
+        python -m pipenv run pip install pytest-aioworkers pytest-mock pytest-cov codecov
         echo "__version__ = 'tests'" > aioworkers_aiohttp/version.py
         python -m pipenv run pip install -e .
         python -m pipenv install --skip-lock
