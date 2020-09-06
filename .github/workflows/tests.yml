@@ -28,17 +28,17 @@ jobs:
       if: ${{ matrix.python-version == '3.6' && matrix.os == 'ubuntu-latest' }}
       run: |
         python -m pipenv run pip install -U isort
-        isort -c aioworkers_aiohttp
+        python -m pipenv run isort -c aioworkers_aiohttp
     - name: flake8
       if: ${{ matrix.python-version == '3.6' && matrix.os == 'ubuntu-latest' }}
       run: |
         python -m pipenv run pip install -U flake8 flake8-print
-        flake8 aioworkers_aiohttp
+        python -m pipenv run flake8 aioworkers_aiohttp
     - name: mypy
       if: ${{ matrix.python-version == '3.6' && matrix.os == 'ubuntu-latest' }}
       run: |
         python -m pipenv run pip install -U mypy
-        mypy aioworkers_aiohttp
+        python -m pipenv run mypy aioworkers_aiohttp
     - name: Install dependencies
       run: |
         python -m pipenv run pip install pytest-aioworkers pytest-mock pytest-cov codecov
