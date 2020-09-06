@@ -3,8 +3,8 @@ aioworkers-aiohttp
 
 The package to integration aioworkers with aiohttp
 
-.. image:: https://travis-ci.org/aioworkers/aioworkers-aiohttp.svg?branch=master
-  :target: https://travis-ci.org/aioworkers/aioworkers-aiohttp
+.. image:: https://github.com/aioworkers/aioworkers-aiohttp/workflows/Tests/badge.svg
+  :target: https://github.com/aioworkers/aioworkers-aiohttp/actions?query=workflow%3ATests
 
 .. image:: https://codecov.io/gh/aioworkers/aioworkers-aiohttp/branch/master/graph/badge.svg
   :target: https://codecov.io/gh/aioworkers/aioworkers-aiohttp
