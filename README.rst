@@ -41,6 +41,9 @@ Example
       format: %a %t "%r" %s %b "%{Referer}i" "%{User-Agent}i"
 
   app:
+    routes:
+      - mymodule.route_table
+      - mymodule.route
     resources:
       /html:
         static: static/html
