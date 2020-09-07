@@ -39,7 +39,8 @@ def get_version():
 setup(
     name='aioworkers-aiohttp',
     version=get_version(),
-    description="",
+    description="Integrations aioworkers with aiohttp",
+    long_description=read('README.rst'),
     author="Alexander Malev",
     author_email='yttrium@somedev.ru',
     url='https://github.com/aioworkers/aioworkers-aiohttp',
