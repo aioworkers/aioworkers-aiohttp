@@ -47,6 +47,7 @@ setup(
     packages=find_packages(include=[pkg]),
     include_package_data=True,
     install_requires=requirements,
+    python_requires='>=3.5.3',
     license="Apache Software License 2.0",
     keywords='aioworkers aiohttp',
     classifiers=[
