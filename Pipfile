@@ -8,7 +8,7 @@ python_version = "3.6"
 
 [packages]
 aiohttp = "==3.6.3"
-aiohttp-apiset = "==0.9.11.2"
+aiohttp-apiset = "==0.9.12"
 pytest = "==6.1.2"
 pytest-aioworkers = "==0.3"
 pytest-cov = "==2.10.1"
