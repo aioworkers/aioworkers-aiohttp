@@ -10,18 +10,14 @@ The package to integration aioworkers with aiohttp
   :target: https://codecov.io/gh/aioworkers/aioworkers-aiohttp
 
 .. image:: https://img.shields.io/pypi/v/aioworkers-aiohttp.svg
-  :target: https://pypi.python.org/pypi/aioworkers-aiohttp
-
-.. image:: https://pyup.io/repos/github/aioworkers/aioworkers-aiohttp/shield.svg
-  :target: https://pyup.io/repos/github/aioworkers/aioworkers-aiohttp/
-  :alt: Updates
+  :target: https://pypi.org/project/aioworkers-aiohttp
 
 .. image:: https://readthedocs.org/projects/aioworkers-aiohttp/badge/?version=latest
   :target: http://aioworkers-aiohttp.readthedocs.io/en/latest/?badge=latest
   :alt: Documentation Status
 
 .. image:: https://img.shields.io/pypi/pyversions/aioworkers-aiohttp.svg
-  :target: https://pypi.python.org/pypi/aioworkers-aiohttp
+  :target: https://pypi.org/project/aioworkers-aiohttp
 
 
 Features
