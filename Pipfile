@@ -9,7 +9,7 @@ python_version = "3.6"
 [packages]
 aiohttp = "==3.7.3"
 aiohttp-apiset = "==0.9.13.2"
-pytest = "==6.2.0"
+pytest = "==6.2.1"
 pytest-aioworkers = "==0.3"
 pytest-cov = "==2.10.1"
 pytest-mock = "==3.3.1"
