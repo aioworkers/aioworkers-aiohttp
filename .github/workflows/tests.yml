@@ -53,6 +53,7 @@ jobs:
           python-version: ${{ matrix.python-version }}
       - name: Install dependencies
         run: |
+          pip install -U pip setuptools pipenv
           python -m pipenv run pip install pytest-aioworkers pytest-mock pytest-cov codecov
           echo "__version__ = 'tests'" > aioworkers_aiohttp/version.py
           python -m pipenv run pip install -e .
