@@ -42,7 +42,7 @@ jobs:
   tests-on-ubuntu:
     runs-on: ubuntu-latest
     strategy:
-      max-parallel: 4
+      max-parallel: 5
       matrix:
         python-version: [3.6, 3.7, 3.8, 3.9, pypy3]
     steps:
