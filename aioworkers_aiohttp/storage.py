@@ -21,6 +21,7 @@ class RoStorage(base.AbstractStorageReadOnly):
     """
 
     async def init(self):
+        await super().init()
         self._prefix = self.config.get('prefix')
         self._template = self.config.get('template')
         if self._prefix:
