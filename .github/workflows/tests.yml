@@ -3,59 +3,108 @@ name: Tests
 on: [push]
 
 jobs:
-  tests:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
-        python-version: [3.5, 3.6, 3.7, 3.8, pypy3]
-        exclude:
-        - os: macos-latest
-          python-version: pypy3
-        - os: windows-latest
-          python-version: pypy3
+  tests-on-python35:
+    runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v2
-      with:
-        python-version: ${{ matrix.python-version }}
-    - name: Prepare venv
-      run: |
-        pip install --user pip setuptools
-        pip install --user pipenv
-        python -m pipenv --three
-        python -m pipenv run pip install -U pip setuptools
-    - name: isort
-      if: ${{ matrix.python-version == '3.6' && matrix.os == 'ubuntu-latest' }}
-      run: |
-        python -m pipenv run pip install -U isort
-        python -m pipenv run isort -c aioworkers_aiohttp tests setup.py
-    - name: flake8
-      if: ${{ matrix.python-version == '3.6' && matrix.os == 'ubuntu-latest' }}
-      run: |
-        python -m pipenv run pip install -U flake8 flake8-print
-        python -m pipenv run flake8 aioworkers_aiohttp tests setup.py
-    - name: mypy
-      if: ${{ matrix.python-version == '3.6' && matrix.os == 'ubuntu-latest' }}
-      run: |
-        python -m pipenv run pip install -U mypy
-        python -m pipenv run mypy aioworkers_aiohttp tests setup.py
-    - name: Install dependencies
-      run: |
-        python -m pipenv run pip install pytest-aioworkers pytest-mock pytest-cov codecov
-        echo "__version__ = 'tests'" > aioworkers_aiohttp/version.py
-        python -m pipenv run pip install -e .
-        python -m pipenv install --skip-lock
-    - name: Test with pytest
-      run: |
-        python -m pipenv run pytest --cov=aioworkers_aiohttp --cov-report=xml
-    - name: Upload coverage to Codecov
-      if: ${{ matrix.python-version == '3.5' && matrix.os == 'ubuntu-latest' }}
-      uses: codecov/codecov-action@v1
-      with:
-        token: ${{ secrets.CODECOV_TOKEN }}
-        file: ./coverage.xml
-        flags: unittests
-        name: codecov-umbrella
-        fail_ci_if_error: true
+      - uses: actions/checkout@v2
+      - name: Set up Python 3.5
+        uses: actions/setup-python@v2.2.1
+        with:
+          python-version: 3.5
+      - name: Install dependencies
+        run: |
+          pip install -U pip setuptools
+          pip install -U pipenv codecov
+          pip install -e .
+          pipenv install -d --skip-lock --system
+      - name: isort
+        run: |
+          isort -c aioworkers_aiohttp tests
+      - name: flake8
+        run: |
+          flake8 aioworkers_aiohttp tests
+      - name: mypy
+        run: |
+          mypy aioworkers_aiohttp tests
+      - name: Test with pytest
+        run: |
+          pytest --cov=aioworkers_aiohttp --cov-report=xml
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v1
+        continue-on-error: true
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          file: ./coverage.xml
+          flags: unittests
+          name: codecov-umbrella
+          fail_ci_if_error: true
+
+  tests-on-ubuntu:
+    runs-on: ubuntu-latest
+    strategy:
+      max-parallel: 5
+      matrix:
+        python-version: [3.6, 3.7, 3.8, 3.9, pypy3]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2.2.1
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install dependencies
+        run: |
+          pip install -U pip setuptools pipenv
+          python -m pipenv run pip install pytest-aioworkers pytest-mock
+          echo "__version__ = 'tests'" > aioworkers_aiohttp/version.py
+          python -m pipenv run pip install -e .
+          python -m pipenv install --skip-lock
+      - name: Test with pytest
+        run: |
+          python -m pipenv run pytest
+
+  tests-on-macos:
+    runs-on: macOS-latest
+    strategy:
+      max-parallel: 4
+      matrix:
+        python-version: [3.6]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2.2.1
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install dependencies
+        run: |
+          pip install -U pip setuptools
+          pip install -U pipenv
+          pip install -e .
+          pipenv install -d --skip-lock --system
+      - name: Test with pytest
+        run: |
+          pytest
+
+  tests-on-windows:
+    runs-on: windows-latest
+    strategy:
+      max-parallel: 4
+      matrix:
+        python-version: [3.6]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2.2.1
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install dependencies
+        run: |
+          pip install -U pip setuptools
+          pip install -U pipenv
+          pip install -e .
+          pip install pytest-aioworkers
+          pipenv install --skip-lock --system
+        continue-on-error: true
+      - name: Test with pytest
+        run: |
+          pytest
+        continue-on-error: true
