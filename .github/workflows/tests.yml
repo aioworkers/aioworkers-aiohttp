@@ -54,10 +54,57 @@ jobs:
       - name: Install dependencies
         run: |
           pip install -U pip setuptools pipenv
-          python -m pipenv run pip install pytest-aioworkers pytest-mock pytest-cov codecov
+          python -m pipenv run pip install pytest-aioworkers pytest-mock
           echo "__version__ = 'tests'" > aioworkers_aiohttp/version.py
           python -m pipenv run pip install -e .
           python -m pipenv install --skip-lock
       - name: Test with pytest
         run: |
           python -m pipenv run pytest
+
+  tests-on-macos:
+    runs-on: macOS-latest
+    strategy:
+      max-parallel: 4
+      matrix:
+        python-version: [3.6]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2.2.1
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install dependencies
+        run: |
+          pip install -U pip setuptools
+          pip install -U pipenv
+          pip install -e .
+          pipenv install -d --skip-lock --system
+      - name: Test with pytest
+        run: |
+          pytest
+
+  tests-on-windows:
+    runs-on: windows-latest
+    strategy:
+      max-parallel: 4
+      matrix:
+        python-version: [3.6]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2.2.1
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install dependencies
+        run: |
+          pip install -U pip setuptools
+          pip install -U pipenv
+          pip install -e .
+          pip install pytest-aioworkers
+          pipenv install --skip-lock --system
+        continue-on-error: true
+      - name: Test with pytest
+        run: |
+          pytest
+        continue-on-error: true
