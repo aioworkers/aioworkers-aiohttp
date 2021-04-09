@@ -54,6 +54,7 @@ jobs:
       - name: Install dependencies
         run: |
           pip install -U pip setuptools pipenv
+          rm Pipfile
           python -m pipenv run pip install pytest-aioworkers pytest-mock
           echo "__version__ = 'tests'" > aioworkers_aiohttp/version.py
           python -m pipenv run pip install -e .
