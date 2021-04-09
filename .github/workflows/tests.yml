@@ -3,14 +3,14 @@ name: Tests
 on: [push]
 
 jobs:
-  tests-on-python35:
+  tests-on-python36:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Set up Python 3.5
+      - name: Set up Python 3.6
         uses: actions/setup-python@v2.2.1
         with:
-          python-version: 3.5
+          python-version: 3.6
       - name: Install dependencies
         run: |
           pip install -U pip setuptools
@@ -44,7 +44,7 @@ jobs:
     strategy:
       max-parallel: 5
       matrix:
-        python-version: [3.6, 3.7, 3.8, 3.9, pypy3]
+        python-version: [3.7, 3.8, 3.9, pypy3]
     steps:
       - uses: actions/checkout@v2
       - name: Set up Python ${{ matrix.python-version }}
