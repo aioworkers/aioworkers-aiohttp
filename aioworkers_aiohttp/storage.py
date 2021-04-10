@@ -40,7 +40,7 @@ class RoStorage(base.AbstractStorageReadOnly):
             if param in self.config:
                 self.session_params[param] = self.config[param]
         self.reset_session()
-        self.context.on_stop.append(self.stop)
+        self.context.on_cleanup.append(self.cleanup_session)
 
     def reset_session(self, **kwargs):
         session = getattr(self, 'session', None)
@@ -52,7 +52,7 @@ class RoStorage(base.AbstractStorageReadOnly):
             kwargs = self.session_params
         self.session = client.ClientSession(loop=self.loop, **kwargs)
 
-    async def stop(self):
+    async def cleanup_session(self):
         await self.session.close()
 
     def raw_key(self, key):
