@@ -81,4 +81,4 @@ async def test_format(loop):
     storage = Storage(config, context=context, loop=loop)
     await storage.init()
     assert isinstance(storage.raw_key('test'), URL)
-    await storage.stop()
+    await storage.cleanup_session()
