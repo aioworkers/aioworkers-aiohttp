@@ -17,4 +17,4 @@ pytest-mock = "==3.5.1"
 [dev-packages]
 isort = "*"
 mypy = "==0.812"
-flake8 = "==3.9.0"
+flake8 = "==3.9.1"
