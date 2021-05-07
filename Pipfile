@@ -12,7 +12,7 @@ aiohttp-apiset = "==0.9.13.2"
 pytest = "*"
 pytest-aioworkers = "==0.3"
 pytest-cov = "==2.11.1"
-pytest-mock = "==3.6.0"
+pytest-mock = "==3.6.1"
 
 [dev-packages]
 isort = "*"
