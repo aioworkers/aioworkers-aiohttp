@@ -7,7 +7,7 @@ name = "pypi"
 python_version = "3.6"
 
 [packages]
-aiohttp = "==3.7.4.post0"
+aiohttp = ">=3.7.4"
 aiohttp-apiset = "==0.9.13.2"
 pytest = "*"
 pytest-aioworkers = "==0.3"
