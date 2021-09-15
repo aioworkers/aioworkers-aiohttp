@@ -6,7 +6,7 @@ from setuptools import find_packages, setup
 
 requirements = [
     'aioworkers>=0.13.0',
-    'aiohttp>=3.1',
+    'aiohttp>=3.7.4',
     'aiohttp-apiset>=0.9.6',
 ]
 
