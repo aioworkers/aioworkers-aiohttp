@@ -66,8 +66,3 @@ Example
                   description: Validation error
                 404:
                   description: Not found
-  logging:
-    version: 1
-    formatters:
-      access:
-        format: %a %t "%r" %s %b "%{Referer}i" "%{User-Agent}i"
