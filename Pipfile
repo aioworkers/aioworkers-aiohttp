@@ -11,7 +11,7 @@ aiohttp = ">=3.7.4"
 aiohttp-apiset = "==0.9.13.2"
 pytest = "*"
 pytest-aioworkers = "==0.3"
-pytest-cov = "==2.12.1"
+pytest-cov = "==3.0.0"
 pytest-mock = "==3.6.1"
 
 [dev-packages]
