@@ -125,10 +125,11 @@ class RoStorage(base.AbstractStorageReadOnly):
                 elif response.status >= 400:
                     if logger.getEffectiveLevel() == logging.DEBUG:
                         logger.debug(
-                            'HttpStorage request to %s '
-                            'returned code %s:\n%s' % (
-                                url, response.status,
-                                (await response.read()).decode()))
+                            "HttpStorage request to %s returned code %s: %s",
+                            url,
+                            response.status,
+                            await response.text(),
+                        )
                     return
                 async with storage_dest.raw_key(key_dest).open('wb') as f:
                     async for chunk in response.content.iter_any():
