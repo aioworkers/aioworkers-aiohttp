@@ -1,111 +1,75 @@
 name: Tests
 
-on: [push]
+on:
+  push:
+    branches:
+      - 'master'
+    tags: [ '*' ]
+  pull_request:
+    branches:
+      - 'master'
 
 jobs:
-  tests-on-python37:
-    runs-on: ubuntu-latest
+  tests:
+    strategy:
+      max-parallel: 7
+      matrix:
+        os:
+          - ubuntu-latest
+        python-version:
+          - '3.7'
+          - '3.9'
+          - pypy-3.8
+          - pypy-3.9
+        include:
+          - os: ubuntu-latest
+            python-version: '3.8'
+            coverage: true
+            lint: true
+          - os: macOS-latest
+            python-version: '3.8'
+          - os: windows-latest
+            python-version: '3.8'
+
+    runs-on: ${{ matrix.os }}
+
     steps:
-      - uses: actions/checkout@v3.0.2
-      - name: Set up Python 3.7
-        uses: actions/setup-python@v4.5.0
+      - uses: actions/checkout@v3.5.2
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4.6.0
         with:
-          python-version: 3.7
+          python-version: ${{ matrix.python-version }}
       - name: Install dependencies
         run: |
-          pip install -U pip setuptools
-          pip install -U pipenv codecov
-          pip install -e .
-          pipenv install -d --skip-lock --system
+          pip install -U hatch
+      - name: ruff
+        if: ${{ matrix.lint }}
+        run: |
+          hatch run lint:ruff check aioworkers_aiohttp tests
       - name: isort
+        if: ${{ matrix.lint }}
         run: |
-          isort -c aioworkers_aiohttp tests
-      - name: flake8
+          hatch run lint:isort -c aioworkers_aiohttp tests
+      - name: black
+        if: ${{ matrix.lint }}
         run: |
-          flake8 aioworkers_aiohttp tests
+          hatch run lint:black --check --diff aioworkers_aiohttp tests
       - name: mypy
+        if: ${{ matrix.lint }}
         run: |
-          mypy aioworkers_aiohttp tests
-      - name: Test with pytest
+          hatch run lint:mypy aioworkers_aiohttp tests
+      - name: Tests with coverage
         run: |
-          pytest --cov=aioworkers_aiohttp --cov-report=xml
+          hatch run cov
+      - name: coverage.xml
+        if: ${{ matrix.coverage }}
+        run: |
+          hatch run coverage xml
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v3.1.0
-        continue-on-error: true
+        if: ${{ matrix.coverage }}
+        uses: codecov/codecov-action@v3.1.3
         with:
-          token: ${{ secrets.CODECOV_TOKEN }}
           file: ./coverage.xml
           flags: unittests
           name: codecov-umbrella
           fail_ci_if_error: true
-
-  tests-on-ubuntu:
-    runs-on: ubuntu-latest
-    strategy:
-      max-parallel: 5
-      matrix:
-        python-version: [3.8, 3.9, pypy3]
-    steps:
-      - uses: actions/checkout@v3.0.2
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v4.5.0
-        with:
-          python-version: ${{ matrix.python-version }}
-      - name: Install dependencies
-        run: |
-          pip install -U pip setuptools pipenv
-          rm Pipfile
-          python -m pipenv run pip install pytest-aioworkers pytest-mock
-          echo "__version__ = 'tests'" > aioworkers_aiohttp/version.py
-          python -m pipenv run pip install -e .
-          python -m pipenv install --skip-lock
-      - name: Test with pytest
-        run: |
-          python -m pipenv run pytest
-
-  tests-on-macos:
-    runs-on: macOS-latest
-    strategy:
-      max-parallel: 4
-      matrix:
-        python-version: [3.7]
-    steps:
-      - uses: actions/checkout@v3.0.2
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v4.5.0
-        with:
-          python-version: ${{ matrix.python-version }}
-      - name: Install dependencies
-        run: |
-          pip install -U pip setuptools
-          pip install -U pipenv
-          pip install -e .
-          pipenv install -d --skip-lock --system
-      - name: Test with pytest
-        run: |
-          pytest
-
-  tests-on-windows:
-    runs-on: windows-latest
-    strategy:
-      max-parallel: 4
-      matrix:
-        python-version: [3.7]
-    steps:
-      - uses: actions/checkout@v3.0.2
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v4.5.0
-        with:
-          python-version: ${{ matrix.python-version }}
-      - name: Install dependencies
-        run: |
-          pip install -U pip setuptools
-          pip install -U pipenv
-          pip install -e .
-          pip install pytest-aioworkers
-          pipenv install --skip-lock --system
-        continue-on-error: true
-      - name: Test with pytest
-        run: |
-          pytest
-        continue-on-error: true
