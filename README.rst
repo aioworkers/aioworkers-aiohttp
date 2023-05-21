@@ -3,21 +3,34 @@ aioworkers-aiohttp
 
 The package to integration aioworkers with aiohttp
 
+.. image:: https://img.shields.io/pypi/v/aioworkers-aiohttp.svg
+  :target: https://pypi.org/project/aioworkers-aiohttp
+
 .. image:: https://github.com/aioworkers/aioworkers-aiohttp/workflows/Tests/badge.svg
   :target: https://github.com/aioworkers/aioworkers-aiohttp/actions?query=workflow%3ATests
 
 .. image:: https://codecov.io/gh/aioworkers/aioworkers-aiohttp/branch/master/graph/badge.svg
   :target: https://codecov.io/gh/aioworkers/aioworkers-aiohttp
 
-.. image:: https://img.shields.io/pypi/v/aioworkers-aiohttp.svg
-  :target: https://pypi.org/project/aioworkers-aiohttp
+.. image:: https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/charliermarsh/ruff/main/assets/badge/v0.json
+  :target: https://github.com/charliermarsh/ruff
+
+.. image:: https://img.shields.io/badge/types-Mypy-blue.svg
+  :target: https://github.com/python/mypy
 
 .. image:: https://readthedocs.org/projects/aioworkers-aiohttp/badge/?version=latest
-  :target: http://aioworkers-aiohttp.readthedocs.io/en/latest/?badge=latest
+  :target: https://aioworkers-aiohttp.readthedocs.io/en/latest/?badge=latest
   :alt: Documentation Status
 
 .. image:: https://img.shields.io/pypi/pyversions/aioworkers-aiohttp.svg
   :target: https://pypi.org/project/aioworkers-aiohttp
+
+.. image:: https://img.shields.io/pypi/dm/aioworkers-aiohttp.svg
+  :target: https://pypi.org/project/aioworkers-aiohttp
+
+.. image:: https://img.shields.io/badge/%F0%9F%A5%9A-Hatch-4051b5.svg
+  :alt: Hatch project
+  :target: https://github.com/pypa/hatch
 
 
 Features
@@ -66,3 +79,34 @@ Example
                   description: Validation error
                 404:
                   description: Not found
+
+
+Development
+-----------
+
+Check code:
+
+.. code-block:: shell
+
+    hatch run lint:all
+
+
+Format code:
+
+.. code-block:: shell
+
+    hatch run lint:fmt
+
+
+Run tests:
+
+.. code-block:: shell
+
+    hatch run pytest
+
+
+Run tests with coverage:
+
+.. code-block:: shell
+
+    hatch run cov
