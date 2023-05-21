@@ -1,4 +1,4 @@
-from collections import Mapping
+from typing import Mapping
 
 from aiohttp import web
 from aioworkers.humanize import parse_size

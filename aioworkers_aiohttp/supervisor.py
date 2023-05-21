@@ -1,4 +1,4 @@
-from collections import Mapping
+from typing import Mapping
 
 from aioworkers import utils
 from aioworkers.worker import subprocess, supervisor
