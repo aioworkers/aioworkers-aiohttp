@@ -35,7 +35,8 @@ class Application(web.Application):
             pass
         elif isinstance(config.middlewares, list):
             kwargs['middlewares'] = map(
-                self.context.get_object, config.middlewares,
+                self.context.get_object,
+                config.middlewares,
             )
         else:
             raise TypeError('Middlewares should be described in list')
@@ -46,8 +47,10 @@ class Application(web.Application):
             kwargs['router'].set_cors(self, **cors)
 
         for signal in (
-            'on_startup', 'cleanup_ctx',
-            'on_cleanup', 'on_response_prepare',
+            "on_startup",
+            "cleanup_ctx",
+            "on_cleanup",
+            "on_response_prepare",
         ):
             sigs = config.get(signal)
             signals = getattr(self, signal, None)
@@ -83,7 +86,9 @@ class Application(web.Application):
                     raise TypeError(
                         'operation for {method} {url} expected Mapping, '
                         'not {t}'.format(
-                            method=method.upper(), url=url, t=type(operation),
+                            method=method.upper(),
+                            url=url,
+                            t=type(operation),
                         )
                     )
                 operation = dict(operation)
@@ -93,8 +98,10 @@ class Application(web.Application):
                     handler = self.context.get_object(handler)
                 if is_swagger:
                     resource.add_route(
-                        method.upper(), handler,
-                        swagger_data=operation, validate=validate,
+                        method.upper(),
+                        handler,
+                        swagger_data=operation,
+                        validate=validate,
                     )
                 else:
                     resource.add_route(method.upper(), handler)
@@ -104,15 +111,13 @@ def iter_resources(resources, prefix=''):
     if not resources:
         return
     elif not isinstance(resources, Mapping):
-        raise TypeError(
-            'Resources should be described in dict %s' % resources)
+        raise TypeError("Resources should be described in dict %s" % resources)
     prefix += resources.get('prefix', '')
     for name, sub in resources.items():
         if name == 'prefix':
             continue
         elif not isinstance(sub, Mapping):
-            raise TypeError(
-                'Resource should be described in dict %s' % sub)
+            raise TypeError("Resource should be described in dict %s" % sub)
         routes = dict(sub)
         priority = routes.pop('priority', 0)
         if 'include' in routes:

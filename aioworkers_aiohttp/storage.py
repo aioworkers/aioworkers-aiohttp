@@ -9,7 +9,7 @@ from yarl import URL
 
 
 class RoStorage(base.AbstractStorageReadOnly):
-    """ ReadOnly storage over http GET
+    """ReadOnly storage over http GET
     config:
         semaphore: int
         allow_hosts: list
@@ -26,8 +26,7 @@ class RoStorage(base.AbstractStorageReadOnly):
         self._template = self.config.get('template')
         if self._prefix:
             self._prefix = URL(self._prefix)
-        self._semaphore = asyncio.Semaphore(
-            self.config.get('semaphore', 20), loop=self.loop)
+        self._semaphore = asyncio.Semaphore(self.config.get("semaphore", 20))
         self._allow_hosts = self.config.get('allow_hosts')
         self._format = self.config.get('format', 'json')
         self._return_status = self.config.get('return_status', False)
@@ -109,11 +108,12 @@ class RoStorage(base.AbstractStorageReadOnly):
         return self.request(url)
 
     async def copy(self, key_source, storage_dest, key_dest):
-        """ Return True if data are copied
+        """Return True if data are copied
         * optimized for http->fs copy
         * not supported return_status
         """
         from aioworkers.storage.filesystem import FileSystemStorage
+
         if not isinstance(storage_dest, FileSystemStorage):
             return super().copy(key_source, storage_dest, key_dest)
         url = self.raw_key(key_source)
@@ -138,7 +138,7 @@ class RoStorage(base.AbstractStorageReadOnly):
 
 
 class Storage(RoStorage, base.AbstractStorageWriteOnly):
-    """ RW storage over http
+    """RW storage over http
     config:
         semaphore: int
         allow_hosts: list
@@ -164,6 +164,4 @@ class Storage(RoStorage, base.AbstractStorageWriteOnly):
             data = value
             headers = {}
 
-        return self.request(
-            url, method=self.config.get('set', 'post'),
-            data=data, headers=headers)
+        return self.request(url, method=self.config.get('set', 'post'), data=data, headers=headers)

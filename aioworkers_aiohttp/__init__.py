@@ -16,9 +16,7 @@ BASE = Path(__file__).parent
 
 
 class plugin(Plugin):
-    configs = (
-        BASE / 'plugin.ini',
-    )
+    configs = (BASE / "plugin.ini",)
 
     def __init__(self):
         super().__init__()
@@ -34,7 +32,8 @@ class plugin(Plugin):
             pass
 
     def parse_known_args(
-        self, args: Iterable[str],
+        self,
+        args: Iterable[str],
         namespace: argparse.Namespace,
     ) -> Tuple[argparse.Namespace, Iterable[str]]:
         if namespace.port:
