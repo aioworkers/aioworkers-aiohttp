@@ -26,6 +26,8 @@ classifiers = [
     "Programming Language :: Python :: 3.7",
     "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: Implementation :: CPython",
     "Programming Language :: Python :: Implementation :: PyPy",
 ]
@@ -76,6 +78,8 @@ python = [
     "3.7",
     "3.8",
     "3.9",
+    "3.10",
+    "3.11",
 ]
 
 [tool.pytest.ini_options]
@@ -114,6 +118,8 @@ target-version = [
     "py37",
     "py38",
     "py39",
+    "py310",
+    "py311",
 ]
 
 [tool.isort]

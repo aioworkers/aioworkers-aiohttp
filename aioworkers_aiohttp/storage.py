@@ -1,7 +1,7 @@
 import asyncio
 import json
 import logging
-from collections import Mapping, Sequence
+from typing import Mapping, Sequence
 
 from aiohttp import ClientOSError, client
 from aioworkers.storage import StorageError, base
@@ -49,7 +49,7 @@ class RoStorage(base.AbstractStorageReadOnly):
             kwargs = {**self.session_params, **kwargs}
         else:
             kwargs = self.session_params
-        self.session = client.ClientSession(loop=self.loop, **kwargs)
+        self.session = client.ClientSession(**kwargs)
 
     async def cleanup_session(self):
         await self.session.close()
