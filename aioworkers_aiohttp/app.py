@@ -71,7 +71,7 @@ class Application(web.Application):
         default_validate = self.config.get('router.default_validate', True)
         for url, name, routes in sort_resources(resources):
             if 'include' in routes:
-                self.router.include(**routes)
+                self.router.include(**routes)  # type: ignore
                 continue
             if 'static' in routes:
                 static_params = routes.pop('static')
@@ -102,7 +102,7 @@ class Application(web.Application):
                         handler,
                         swagger_data=operation,
                         validate=validate,
-                    )
+                    )  # type: ignore
                 else:
                     resource.add_route(method.upper(), handler)
 

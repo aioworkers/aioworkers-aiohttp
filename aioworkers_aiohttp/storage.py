@@ -115,7 +115,7 @@ class RoStorage(base.AbstractStorageReadOnly):
         from aioworkers.storage.filesystem import FileSystemStorage
 
         if not isinstance(storage_dest, FileSystemStorage):
-            return super().copy(key_source, storage_dest, key_dest)
+            return super().copy(key_source, storage_dest, key_dest)  # type: ignore
         url = self.raw_key(key_source)
         logger = self.context.logger
         async with self._semaphore:

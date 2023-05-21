@@ -1,3 +1,6 @@
+import socket
+from typing import List
+
 from aiohttp import web
 from aioworkers.net.server import SocketServer
 from aioworkers.utils import import_name
@@ -5,6 +8,7 @@ from aioworkers.utils import import_name
 
 class WebServer(SocketServer):
     port = None
+    _sockets: List[socket.socket]
 
     @classmethod
     def set_port(cls, port: int) -> None:
@@ -48,4 +52,5 @@ class WebServer(SocketServer):
             await web.SockSite(self._runner, sock).start()
 
     async def stop(self):
+        assert self._runner
         await self._runner.cleanup()

@@ -25,7 +25,7 @@ def config(config):
 
 async def test_set_get(event_loop, aiohttp_client):
     app = web.Application()
-    app.router.add_get("/test/1", lambda x: web.json_response(["Python"]))
+    app.router.add_get("/test/1", lambda x: web.json_response(["Python"]))  # type: ignore
     client = await aiohttp_client(app)
     url = client.make_url('/')
 
@@ -48,7 +48,7 @@ async def test_set_get(event_loop, aiohttp_client):
 
 async def test_copy(event_loop, aiohttp_client, config):
     app = web.Application()
-    app.router.add_get("/test/1", lambda x: web.json_response(["Python"]))
+    app.router.add_get("/test/1", lambda x: web.json_response(["Python"]))  # type: ignore
     client = await aiohttp_client(app)
     url = client.make_url('/')
 
