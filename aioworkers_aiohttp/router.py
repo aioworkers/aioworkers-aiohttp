@@ -14,5 +14,5 @@ class Router(SwaggerRouter, AbstractSwaggerRouter):
         kwargs['search_dirs'] = dirs
         super().__init__(**kwargs)
 
-    def include(self, include, *, prefix=None, mapping=None, name=None,):
+    def include(self, include, *, prefix=None, mapping=None, name=None):
         return super().include(include, basePath=prefix, operationId_mapping=mapping, name=name)

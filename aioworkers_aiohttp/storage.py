@@ -164,4 +164,4 @@ class Storage(RoStorage, base.AbstractStorageWriteOnly):
             data = value
             headers = {}
 
-        return self.request(url, method=self.config.get('set', 'post'), data=data, headers=headers)
+        return self.request(url, method=self.config.get("set", "post"), data=data, headers=headers)
