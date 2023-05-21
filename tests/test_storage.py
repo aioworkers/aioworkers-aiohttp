@@ -18,16 +18,15 @@ def config(config):
                 cls='aioworkers.storage.filesystem.FileSystemStorage',
                 path=d,
                 format='json',
-            ))
+            )
+        )
         return config
 
 
-async def test_set_get(loop, test_client):
+async def test_set_get(event_loop, aiohttp_client):
     app = web.Application()
-    app.router.add_get(
-        '/test/1',
-        lambda x: web.json_response(["Python"]))
-    client = await test_client(app)
+    app.router.add_get("/test/1", lambda x: web.json_response(["Python"]))
+    client = await aiohttp_client(app)
     url = client.make_url('/')
 
     data = 'Python'
@@ -40,19 +39,17 @@ async def test_set_get(loop, test_client):
             format='json',
         )
     )
-    async with Context(config=config, loop=loop) as context:
+    async with Context(config=config, loop=event_loop) as context:
         storage = context.storage
         assert data in await storage.get('test/1')
         with pytest.raises(StorageError):
             await storage.set('test/1', data)
 
 
-async def test_copy(loop, test_client, config):
+async def test_copy(event_loop, aiohttp_client, config):
     app = web.Application()
-    app.router.add_get(
-        '/test/1',
-        lambda x: web.json_response(["Python"]))
-    client = await test_client(app)
+    app.router.add_get("/test/1", lambda x: web.json_response(["Python"]))
+    client = await aiohttp_client(app)
     url = client.make_url('/')
 
     data = 'Python'
@@ -64,21 +61,23 @@ async def test_copy(loop, test_client, config):
             format='json',
         )
     )
-    async with Context(config=config, loop=loop) as context:
+    async with Context(config=config, loop=event_loop) as context:
         await context.storage.copy('test/1', context.fs, 'test/1')
         assert data in await context.fs.get('test/1')
 
 
-async def test_format(loop):
+async def test_format(event_loop):
     config = Config()
-    config.update(dict(
-        name='',
-        semaphore=1,
-        format='bytes',
-    ))
-    context = Context(config=config, loop=loop)
+    config.update(
+        dict(
+            name="",
+            semaphore=1,
+            format="bytes",
+        )
+    )
+    context = Context(config=config, loop=event_loop)
     await context.init()
-    storage = Storage(config, context=context, loop=loop)
+    storage = Storage(config, context=context, loop=event_loop)
     await storage.init()
     assert isinstance(storage.raw_key('test'), URL)
     await storage.cleanup_session()
