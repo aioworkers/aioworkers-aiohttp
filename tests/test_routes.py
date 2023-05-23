@@ -17,7 +17,7 @@ def config_yaml():
 
 @route_table.get('/a')
 async def a(request):
-    return web.HTTPOk()
+    raise web.HTTPOk()
 
 
 static = web.static('/static', 'tests')
