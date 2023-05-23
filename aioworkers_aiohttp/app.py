@@ -13,6 +13,7 @@ class Application(web.Application):
         self.context = context
         cors = None
 
+        kwargs = {}
         debug = config.get('debug')
         if isinstance(debug, bool):
             kwargs.setdefault('debug', debug)
