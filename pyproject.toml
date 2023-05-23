@@ -54,7 +54,7 @@ dev-lint = [
 
 [project.urls]
 Homepage = "https://github.com/aioworkers/aioworkers-aiohttp"
-Documentation = "https://github.com/aioworkers/aioworkers-aiohttp"
+Documentation = "https://github.com/aioworkers/aioworkers-aiohttp#readme"
 Issues = "https://github.com/aioworkers/aioworkers-aiohttp/issues"
 Source = "https://github.com/aioworkers/aioworkers-aiohttp"
 
@@ -158,9 +158,9 @@ style = [
     "black --check --diff {args:aioworkers_aiohttp tests}",
 ]
 fmt = [
-    "black {args:aioworkers_aiohttp tests}",
-    "isort {args:aioworkers_aiohttp tests}",
     "ruff --fix {args:aioworkers_aiohttp tests}",
+    "isort {args:aioworkers_aiohttp tests}",
+    "black {args:aioworkers_aiohttp tests}",
     "style",
 ]
 all = [
