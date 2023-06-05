@@ -3,7 +3,7 @@ from abc import ABC, abstractmethod
 
 try:
     from typing import Protocol
-except ImportError:
+except ImportError:  # no cov
     from typing_extensions import Protocol  # type: ignore
 
 
