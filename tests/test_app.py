@@ -22,6 +22,7 @@ def config_yaml():
           get:
             handler: uuid.uuid4
         block:
+          prefix: /now
           /date:
             name: date
             get: datetime.datetime.now
