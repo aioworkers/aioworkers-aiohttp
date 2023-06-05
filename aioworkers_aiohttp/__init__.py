@@ -7,7 +7,7 @@ from aioworkers.core.plugin import Plugin
 from .server import WebServer
 
 
-__version__ = '0.0.0'
+__version__ = "0.0.0"
 
 BASE = Path(__file__).parent
 
