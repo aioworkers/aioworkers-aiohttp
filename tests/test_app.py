@@ -9,7 +9,10 @@ async def startup(app):
 def config_yaml():
     return """
     app:
+      debug: true
+      client_max_size: 1M
       router:
+        cors: {}
         search_in_modules:
           - datetime
       resources:
