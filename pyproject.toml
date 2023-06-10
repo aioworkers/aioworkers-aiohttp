@@ -53,7 +53,7 @@ dev-lint = [
 ]
 
 [project.entry-points.aioworkers]
-aiohttp = "aioworkers_aiohttp"
+aiohttp = "aioworkers_aiohttp:plugin"
 
 [project.urls]
 Homepage = "https://github.com/aioworkers/aioworkers-aiohttp"
