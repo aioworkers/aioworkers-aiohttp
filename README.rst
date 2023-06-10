@@ -26,7 +26,7 @@ The package to integration aioworkers with aiohttp
   :alt: Code style: Mypy
 
 .. image:: https://readthedocs.org/projects/aioworkers-aiohttp/badge/?version=latest
-  :target: https://aioworkers-aiohttp.readthedocs.io/en/latest/?badge=latest
+  :target: https://github.com/aioworkers/aioworkers-aiohttp#readme
   :alt: Documentation Status
 
 .. image:: https://img.shields.io/pypi/pyversions/aioworkers-aiohttp.svg
