@@ -52,6 +52,9 @@ dev-lint = [
     "mypy==1.3.0",
 ]
 
+[project.entry-points.aioworkers]
+aiohttp = "aioworkers-aiohttp"
+
 [project.urls]
 Homepage = "https://github.com/aioworkers/aioworkers-aiohttp"
 Documentation = "https://github.com/aioworkers/aioworkers-aiohttp#readme"
