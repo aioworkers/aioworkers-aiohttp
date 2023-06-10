@@ -23,7 +23,8 @@ def config(config):
         return config
 
 
-async def test_set_get(event_loop, aiohttp_client):
+@pytest.mark.parametrize("result_format", ["str", "json"])
+async def test_set_get(event_loop, aiohttp_client, result_format):
     app = web.Application()
     app.router.add_get("/test/1", lambda x: web.json_response(["Python"]))  # type: ignore
     client = await aiohttp_client(app)
@@ -36,7 +37,9 @@ async def test_set_get(event_loop, aiohttp_client):
             cls='aioworkers_aiohttp.storage.Storage',
             prefix=str(url),
             semaphore=1,
-            format='json',
+            format=result_format,
+            headers={"accept": "application/json"},
+            conn_timeout=3,
         )
     )
     async with Context(config=config, loop=event_loop) as context:
@@ -80,4 +83,5 @@ async def test_format(event_loop):
     storage = Storage(config, context=context, loop=event_loop)
     await storage.init()
     assert isinstance(storage.raw_key('test'), URL)
+    storage.reset_session(read_timeout=3)
     await storage.cleanup_session()
