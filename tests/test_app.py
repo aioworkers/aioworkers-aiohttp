@@ -1,5 +1,7 @@
 import pytest
 
+from aioworkers_aiohttp.abc import AbstractSwaggerRouter
+
 
 async def startup(app):
     app['1234'] = None
@@ -35,3 +37,4 @@ async def test_init(context):
     assert 'app' in context
     assert 'timestamp' in context.app.router
     assert 'block:date' in context.app.router
+    assert isinstance(context.app.router, AbstractSwaggerRouter)

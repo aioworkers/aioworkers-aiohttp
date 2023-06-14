@@ -1,16 +1,22 @@
-from typing import Mapping
+from typing import Mapping, Optional
 
+import aiohttp
 from aiohttp import web
 from aioworkers.humanize import parse_size
 from aioworkers.utils import import_name
 
-from .abc import AbstractSwaggerRouter
+from .abc import AbstractSwaggerRouter, PRouter
+
+
+AIOHTTP_MAJOR_VERSION = int(aiohttp.__version__.split(".")[0])
 
 
 class Application(web.Application):
     def __init__(self, config, *, context, **kwargs):
         self.config = config
         self.context = context
+        self._custom_router: Optional[PRouter] = None
+        self._router_setup = AIOHTTP_MAJOR_VERSION > 3
         cors = None
 
         kwargs = {}
@@ -25,12 +31,16 @@ class Application(web.Application):
             pass
         elif isinstance(config.router, str):
             cls = import_name(config.router)
-            kwargs['router'] = cls()
+            self._custom_router = cls()
         else:
             cfg = dict(config.router)
             cls = import_name(cfg.pop('cls'))
+            self._router_setup |= cfg.pop("setup", self._router_setup)
             cors = cfg.pop('cors', None)
-            kwargs['router'] = cls(**cfg)
+            self._custom_router = cls(**cfg)
+
+        if self._custom_router is not None and not self._router_setup:
+            kwargs['router'] = self._custom_router
 
         if not config.get('middlewares'):
             pass
@@ -44,8 +54,8 @@ class Application(web.Application):
 
         super().__init__(**kwargs)
 
-        if cors is not None:
-            kwargs['router'].set_cors(self, **cors)
+        if self._custom_router is not None and cors is not None:
+            self._custom_router.set_cors(self, **cors)
 
         for signal in (
             "on_startup",
@@ -68,11 +78,11 @@ class Application(web.Application):
             else:
                 self.add_routes(routes)
         resources = self.config.get('resources')
-        is_swagger = isinstance(self.router, AbstractSwaggerRouter)
+        is_swagger = isinstance(self._custom_router, AbstractSwaggerRouter)
         default_validate = self.config.get('router.default_validate', True)
         for url, name, routes in sort_resources(resources):
             if 'include' in routes:
-                self.router.include(**routes)  # type: ignore
+                self._custom_router.include(**routes)  # type: ignore
                 continue
             if 'static' in routes:
                 static_params = routes.pop('static')
@@ -81,7 +91,10 @@ class Application(web.Application):
                 else:
                     kwargs = {'path': static_params}
                 self.router.add_static(url, **kwargs)
-            resource = self.router.add_resource(url, name=name)
+            if self._custom_router is not None:
+                resource = self._custom_router.add_resource(url, name=name)
+            else:
+                resource = self.router.add_resource(url, name=name)
             for method, operation in routes.items():
                 if not isinstance(operation, Mapping):
                     raise TypeError(
@@ -101,11 +114,14 @@ class Application(web.Application):
                     resource.add_route(
                         method.upper(),
                         handler,
-                        swagger_data=operation,
-                        validate=validate,
-                    )  # type: ignore
+                        swagger_data=operation,  # type: ignore
+                        validate=validate,  # type: ignore
+                    )
                 else:
                     resource.add_route(method.upper(), handler)
+
+        if self._router_setup and self._custom_router is not None:
+            self._custom_router.setup(self)
 
 
 def iter_resources(resources, prefix=''):
