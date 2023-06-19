@@ -38,7 +38,7 @@ dependencies = [
 ]
 [project.optional-dependencies]
 dev-test = [
-    "aioworkers==0.21.1",
+    "aioworkers==0.22",
     "aiohttp-apiset==0.9.16",
     "coverage[toml]==7.2.7",
     "pytest==7.3.2",
