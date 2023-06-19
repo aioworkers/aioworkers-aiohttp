@@ -39,6 +39,7 @@ dependencies = [
 [project.optional-dependencies]
 dev-test = [
     "aioworkers==0.21.1",
+    "aiohttp-apiset==0.9.15",
     "coverage[toml]==7.2.7",
     "pytest==7.3.2",
     "pytest-aioworkers[aiohttp]==0.4",
@@ -115,7 +116,6 @@ exclude_lines = [
     "no cov",
     "if __name__ == .__main__.:",
     "if TYPE_CHECKING:",
-    "@abstractmethod",
 ]
 
 [tool.black]
