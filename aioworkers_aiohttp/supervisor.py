@@ -27,8 +27,8 @@ class Supervisor(supervisor.Supervisor):
             raise ValueError('Error value for ports {}'.format(ports))
         return iter(range(first_port, last_port))
 
-    def get_child_config(self):
-        c = super().get_child_config()
+    def get_child_config(self, *args, **kwargs):
+        c = super().get_child_config(*args, **kwargs)
         params = c.get('params') or {}
         if params:
             params = dict(params)
