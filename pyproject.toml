@@ -40,7 +40,7 @@ dependencies = [
 dev-test = [
     "aioworkers==0.21.1",
     "aiohttp-apiset==0.9.16",
-    "coverage[toml]==7.2.7",
+    "coverage[toml]==7.3.0",
     "pytest==7.4.0",
     "pytest-aioworkers[aiohttp]==0.4",
     "pytest-mock==3.11.1",
